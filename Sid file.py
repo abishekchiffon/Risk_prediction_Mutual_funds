@@ -19,3 +19,18 @@ from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.preprocessing import OneHotEncoder
 from scipy.sparse import hstack
 from sklearn.linear_model import ElasticNet
+
+
+
+m=pd.read_csv("D:\\Morningstar - European Mutual Funds.csv")
+
+
+threshold = 0.3  
+
+missing_percentages = m.isnull().mean()
+
+
+columns_to_drop = missing_percentages[missing_percentages > threshold].index
+
+
+df = m.drop(columns=columns_to_drop)
