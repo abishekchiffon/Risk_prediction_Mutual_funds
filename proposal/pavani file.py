@@ -120,3 +120,29 @@ print("Fund category with the most improvement in average return over the past t
 print(most_improved_category)
 
 #%%
+#12. In sectors affected by COVID-19, how did the funds’ performance change from Q1 2020
+#to Q2 2020?
+df['fund_size']
+df['fund_size_currency']
+
+# %%
+#13. What is the average ROE for funds in the “Consumer Defensive” sector, and how does it
+#compare to the overall average?
+# Assuming df is your DataFrame
+# Replace 'sector_consumer_defensive' and 'roe' with the actual column names
+sector_column = 'sector_consumer_defensive'
+roe_column = 'roe'
+
+# Filter funds in the "Consumer Defensive" sector
+consumer_defensive_funds = df[df[sector_column] == 'Consumer Defensive']
+
+# Calculate the average ROE for funds in the "Consumer Defensive" sector
+average_roe_consumer_defensive = consumer_defensive_funds[roe_column].mean()
+
+# Calculate the overall average ROE
+overall_average_roe = df[roe_column].mean()
+
+# Display the results
+print("Average ROE for funds in the 'Consumer Defensive' sector:", average_roe_consumer_defensive)
+print("Overall average ROE:", overall_average_roe)
+# %%
