@@ -114,3 +114,5 @@ if target_column in df.columns:
 
     print("Selected Features with Correlation >= 0.1:")
     print(selected_features.index)
+else:
+    print(f"Error: Target column '{target_column}' not found in DataFrame.")
