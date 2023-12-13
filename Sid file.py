@@ -116,3 +116,34 @@ if target_column in df.columns:
     print(selected_features.index)
 else:
     print(f"Error: Target column '{target_column}' not found in DataFrame.")
+    
+    
+    
+    
+
+
+columns_to_extract =['asset_stock', 'asset_bond', 'asset_cash', 'asset_other',
+       'ongoing_cost', 'management_fees', 'involvement_abortive_contraceptive',
+       'involvement_alcohol', 'involvement_animal_testing',
+       'involvement_controversial_weapons', 'involvement_gambling',
+       'involvement_gmo', 'involvement_military_contracting',
+       'involvement_nuclear', 'involvement_palm_oil', 'involvement_pesticides',
+       'involvement_small_arms', 'involvement_thermal_coal',
+       'involvement_tobacco', 'shareclass_size', 'fund_size',
+       'fund_trailing_return_ytd', 'fund_trailing_return_3years',
+       'nav_per_share','fund_return_2018_q4', 'fund_return_2018_q3', 'fund_return_2018_q2',
+       'fund_return_2018_q1', 'fund_return_2017_q4', 'fund_return_2017_q3',
+       'fund_return_2017_q2', 'fund_return_2017_q1', 'quarters_up',
+       'quarters_down','inception_date', 'category',
+       'investment_strategy', 'investment_managers', 'fund_benchmark',
+       'morningstar_benchmark', 'country_exposure', 'latest_nav_date',
+       'nav_per_share_currency', 'shareclass_size_currency', 'fund_size_currency', 'top5_holdings', 'fund_return_2019']
+
+
+df1 = df[columns_to_extract].copy()
+
+#df1.head()
+
+
+X = df1.drop('fund_return_2019', axis=1)
+y = df1['fund_return_2019']
