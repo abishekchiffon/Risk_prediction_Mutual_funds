@@ -147,3 +147,11 @@ df1 = df[columns_to_extract].copy()
 
 X = df1.drop('fund_return_2019', axis=1)
 y = df1['fund_return_2019']
+
+
+categorical_columns = X.select_dtypes(include=['object']).columns
+
+encoder = OneHotEncoder(handle_unknown='ignore')
+X_encoded = encoder.fit_transform(X[categorical_columns])
+
+X_encoded = hstack([X.drop(columns=categorical_columns).values, X_encoded])
