@@ -73,3 +73,29 @@ print(df.isnull().sum().sum())
 
 from sklearn.feature_selection import mutual_info_regression
 target_column = 'fund_return_2019'
+if target_column in df.columns:
+    
+    numeric_columns = df.select_dtypes(include='number').columns
+    categorical_columns = df.select_dtypes(include='object').columns
+
+    
+    all_columns = numeric_columns.union(categorical_columns)
+
+    
+    features = df[all_columns]
+
+    
+    cat_mi_scores = pd.Series(index=categorical_columns)
+
+    for cat_col in categorical_columns:
+        cat_mi_scores[cat_col] = mutual_info_regression(features[cat_col].astype('category').cat.codes.values.reshape(-1, 1), df[target_column])
+
+    cat_mi_scores = cat_mi_scores.sort_values(ascending=False)
+
+   
+    features_to_select = 0.05
+    selected_features = cat_mi_scores[cat_mi_scores >= features_to_select].index
+
+    print("Selected Categorical Features:")
+    print(selected_features)
+
