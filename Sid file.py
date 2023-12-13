@@ -34,3 +34,24 @@ columns_to_drop = missing_percentages[missing_percentages > threshold].index
 
 
 df = m.drop(columns=columns_to_drop)
+
+
+numerical_cols = df.select_dtypes(include=['number']).columns
+
+for col in numerical_cols:
+    if df[col].isnull().any():
+        mean_val = df[col].mean()
+        median_val = df[col].median()
+        
+        if abs(mean_val - median_val) < 0.5:  
+            imputation_value = mean_val
+            imputation_method = 'mean'
+        else:
+            imputation_value = median_val
+            imputation_method = 'median'
+        
+        df[col].fillna(imputation_value, inplace=True)
+        
+        print(f"Imputed missing values in '{col}' with {imputation_method} ({imputation_value:.3f}).")
+
+#print(df)
