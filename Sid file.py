@@ -104,3 +104,13 @@ else:
 
 
 if target_column in df.columns:
+    numeric_columns = df.select_dtypes(include='number').columns
+
+    features = df[numeric_columns]
+
+    correlation_with_target = features.corrwith(df[target_column])
+
+    selected_features = correlation_with_target[abs(correlation_with_target) >= 0.1]
+
+    print("Selected Features with Correlation >= 0.1:")
+    print(selected_features.index)
