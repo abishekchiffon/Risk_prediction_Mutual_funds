@@ -181,3 +181,40 @@ r2 = r2_score(y_test, y_pred)
 
 print(f"Mean Squared Error on the test set: {mse:.2f}")
 print(f"R-squared on the test set: {r2:.2%}")
+
+
+
+
+
+
+X = df1.drop('fund_return_2019', axis=1)
+y = df1['fund_return_2019']
+
+
+categorical_columns = X.select_dtypes(include=['object']).columns
+
+encoder = OneHotEncoder(sparse=True, handle_unknown='ignore')
+X_encoded = encoder.fit_transform(X[categorical_columns])
+
+X_encoded = hstack([X.drop(columns=categorical_columns).values, X_encoded])
+
+X_train, X_test, y_train, y_test = train_test_split(X_encoded, y, test_size=0.2, random_state=42)
+
+
+alpha_value = 1.0  
+l1_ratio_value = 0.5  
+elastic_net_model = ElasticNet(alpha=alpha_value, l1_ratio=l1_ratio_value)
+elastic_net_model.fit(X_train, y_train)
+
+
+y_pred = elastic_net_model.predict(X_test)
+
+
+mse = mean_squared_error(y_test, y_pred)
+r2 = r2_score(y_test, y_pred)
+
+print(f"Mean Squared Error on the test set: {mse:.2f}")
+print(f"R-squared on the test set: {r2:.2%}")
+
+
+
