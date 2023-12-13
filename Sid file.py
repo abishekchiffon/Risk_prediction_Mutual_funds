@@ -98,4 +98,5 @@ if target_column in df.columns:
 
     print("Selected Categorical Features:")
     print(selected_features)
-
+else:
+    print(f"Error: Target column '{target_column}' not found in DataFrame.")
