@@ -100,3 +100,7 @@ if target_column in df.columns:
     print(selected_features)
 else:
     print(f"Error: Target column '{target_column}' not found in DataFrame.")
+    
+
+
+if target_column in df.columns:
