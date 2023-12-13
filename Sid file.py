@@ -22,6 +22,11 @@ from sklearn.linear_model import ElasticNet
 
 
 
+from sklearn.model_selection import GridSearchCV
+
+
+
+
 m=pd.read_csv("D:\\Morningstar - European Mutual Funds.csv")
 
 
@@ -215,6 +220,62 @@ r2 = r2_score(y_test, y_pred)
 
 print(f"Mean Squared Error on the test set: {mse:.2f}")
 print(f"R-squared on the test set: {r2:.2%}")
+
+
+
+
+
+
+
+X = df1.drop('fund_return_2019', axis=1)
+y = df1['fund_return_2019']
+
+
+categorical_columns = X.select_dtypes(include=['object']).columns
+encoder = OneHotEncoder(handle_unknown='ignore')
+X_encoded = encoder.fit_transform(X[categorical_columns])
+
+
+X_encoded = hstack([X.drop(columns=categorical_columns).values, X_encoded])
+
+
+X_train, X_test, y_train, y_test = train_test_split(X_encoded, y, test_size=0.2, random_state=42)
+
+
+param_grid = {
+    'max_depth': [3, 6],
+    'learning_rate': [0.1, 0.2],
+    'n_estimators': [50, 100]
+}
+
+
+xgb_reg = xgb.XGBRegressor(objective='reg:squarederror', eval_metric='rmse', seed=42)
+
+
+grid_search = GridSearchCV(estimator=xgb_reg, param_grid=param_grid, scoring='neg_mean_squared_error', cv=3, verbose=1)
+
+
+grid_search.fit(X_train, y_train)
+
+
+best_params = grid_search.best_params_
+print("Best Hyperparameters:")
+print(best_params)
+
+best_model = grid_search.best_estimator_
+
+
+y_pred = best_model.predict(X_test)
+
+
+mse = mean_squared_error(y_test, y_pred)
+r2 = r2_score(y_test, y_pred)
+
+print(f"\nMean Squared Error on the test set: {mse:.2f}")
+print(f"R-squared on the test set: {r2:.2%}")
+
+
+
 
 
 
