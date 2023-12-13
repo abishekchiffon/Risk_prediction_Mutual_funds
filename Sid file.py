@@ -170,3 +170,8 @@ params = {
     'colsample_bytree': 0.8,
     'seed': 42
 }
+
+num_rounds = 100
+model = xgb.train(params, dtrain, num_rounds)
+
+y_pred = model.predict(dtest)
