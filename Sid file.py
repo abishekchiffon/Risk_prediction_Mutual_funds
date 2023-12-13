@@ -279,3 +279,38 @@ print(f"R-squared on the test set: {r2:.2%}")
 
 
 
+
+models = [ 'XGB','XGB (After Tuning)', 'Elastic Net', 'RF',
+          'RF(after tuning)']
+
+
+mse_values = [14.26,6.90, 23.16, 6.78, 4.07]
+
+
+r2_values = [82.25,91.42, 71.18, 91.55, 94.9]
+
+results_df = pd.DataFrame({'Model': models, 'MSE': mse_values, 'R-squared': r2_values})
+
+
+fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(12, 5))
+
+sns.barplot(x='Model', y='MSE', data=results_df, ax=axes[0])
+axes[0].set_title('Mean Squared Error Comparison')
+
+
+sns.barplot(x='Model', y='R-squared', data=results_df, ax=axes[1])
+axes[1].set_title('R-squared Comparison')
+
+
+plt.tight_layout()
+
+plt.savefig('model_comparison.png')
+
+plt.show()
+
+
+
+
+
+
+
