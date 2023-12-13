@@ -649,3 +649,324 @@ for col in categorical_columns:
 # 
 
 
+#%% [markdown]
+# # Question 13 
+
+#%% [markdown]
+# What is the average Return on Equity (ROE) for funds with significant allocation in the Consumer Defensive sector ( more than 50% allocation), and how does this average ROE compare to the overall average ROE of all funds?
+
+#%%
+df_sec = df.dropna(subset=['sector_consumer_defensive'])
+
+#%%
+df["sector_consumer_defensive"]
+
+#%%
+sec_nan = df['sector_consumer_defensive'].isna().mean() * 100
+sec_nan
+
+#%%
+# Summing the specified sector columns for the first 5 rows of the DataFrame
+
+# List of sector columns to be summed
+sector_columns = [
+    'sector_basic_materials', 'sector_consumer_cyclical', 'sector_financial_services', 
+    'sector_real_estate', 'sector_consumer_defensive', 'sector_healthcare', 
+    'sector_utilities', 'sector_communication_services', 'sector_energy', 
+    'sector_industrials', 'sector_technology'
+]
+
+# Check if all specified columns are present in the DataFrame
+if all(column in df.columns for column in sector_columns):
+    # Summing the specified columns for the first 5 rows
+    sum_for_5_rows = df.head(100)[sector_columns].sum(axis=1)
+else:
+    sum_for_5_rows = "Some specified columns are missing from the DataFrame."
+
+sum_for_5_rows
+
+
+#%%
+# Adjusting the code to answer the revised question
+
+# Define the threshold for significant allocation in the Consumer Defensive sector
+allocation_threshold = 50  # 50%
+
+# Check if 'roe' and 'sector_consumer_defensive' columns exist
+if 'roe' in df.columns and 'sector_consumer_defensive' in df.columns:
+    # Filtering funds with more than 50% allocation in Consumer Defensive sector
+    consumer_defensive_funds = df[df['sector_consumer_defensive'] > allocation_threshold]
+
+    # Average ROE for these funds
+    avg_roe_consumer_defensive = consumer_defensive_funds['roe'].mean()
+
+    # Overall average ROE
+    overall_avg_roe = df['roe'].mean()
+
+    # Comparison
+    roe_comparison = avg_roe_consumer_defensive - overall_avg_roe
+else:
+    avg_roe_consumer_defensive, overall_avg_roe, roe_comparison = None, None, None
+
+avg_roe_consumer_defensive, overall_avg_roe, roe_comparison
+
+
+#%% [markdown]
+# As we can see the mean roe for consumer_defensive sector is higher than the mean of the overall_roe.
+
+#%% [markdown]
+# **We can do stats test on this**
+
+#%%
+# Creating a box plot to compare the ROE across the specified sectors
+sector_roe_columns = [
+    'sector_basic_materials', 'sector_consumer_cyclical', 'sector_financial_services', 
+    'sector_real_estate', 'sector_consumer_defensive', 'sector_healthcare', 
+    'sector_utilities', 'sector_communication_services', 'sector_energy', 
+    'sector_industrials', 'sector_technology', 'roe'
+]
+# Check if all specified columns are present in the DataFrame
+if all(column in df.columns for column in sector_roe_columns):
+    # Melt the DataFrame to long format for seaborn's boxplot
+    df_melted_for_boxplot = df[sector_roe_columns].melt(id_vars=['roe'], var_name='Sector', value_name='Allocation')
+
+    # Create the box plot
+    plt.figure(figsize=(15, 10))
+    sns.boxplot(x='Sector', y='roe', data=df_melted_for_boxplot[df_melted_for_boxplot['Allocation'] > 50])
+    plt.xticks(rotation=90)
+    plt.title('Box Plot of ROE by Sector')
+    plt.show()
+else:
+    plt.text(0.5, 0.5, 'Some specified columns are missing from the DataFrame.', 
+             horizontalalignment='center', verticalalignment='center')
+    plt.title('Data Unavailable')
+    plt.show()
+
+
+#%% [markdown]
+# ### We can see the following observations
+# * The energy sector perfoms badly
+# * The technology sector performs well
+# * The sector utilities has a stable ROE
+
+#%%
+# Creating a box plot to compare the ROE across the specified sectors
+sector_roe_columns = [
+    'sector_basic_materials', 'sector_consumer_cyclical', 'sector_financial_services', 
+    'sector_real_estate', 'sector_consumer_defensive', 'sector_healthcare', 
+    'sector_utilities', 'sector_communication_services', 'sector_energy', 
+    'sector_industrials', 'sector_technology', 'fund_return_2019'
+]
+# Check if all specified columns are present in the DataFrame
+if all(column in df.columns for column in sector_roe_columns):
+    # Melt the DataFrame to long format for seaborn's boxplot
+    df_melted_for_boxplot = df[sector_roe_columns].melt(id_vars=['fund_return_2019'], var_name='Sector', value_name='Allocation')
+
+    # Create the box plot
+    plt.figure(figsize=(15, 10))
+    sns.boxplot(x='Sector', y='fund_return_2019', data=df_melted_for_boxplot[df_melted_for_boxplot['Allocation'] > 50])
+    plt.xticks(rotation=90)
+    plt.title('Box Plot of fund_return_2019 by Sector')
+    plt.show()
+else:
+    plt.text(0.5, 0.5, 'Some specified columns are missing from the DataFrame.', 
+             horizontalalignment='center', verticalalignment='center')
+    plt.title('Data Unavailable')
+    plt.show()
+
+
+
+#%% [markdown]
+# ### We can see the following observations
+# * Sector technology and basic materials are performing better
+# * Sector utility is stable
+# * Sector energy is bad
+
+#%% [markdown]
+# # ROE on Involvement Categories
+# Involvment involvement_abortive_contraceptive	involvement_alcohol	involvement_animal_testing	involvement_controversial_weapons	involvement_gambling	involvement_gmo	involvement_military_contracting	involvement_nuclear	involvement_palm_oil involvement_pesticides	involvement_small_arms involvement_thermal_coal involvement_tobacco
+
+#%% [markdown]
+# * We grouped all the involvment categories together to give a understanding which one performs better.
+# * We considering only funds with significant allocation in the categoires ( more than 15% allocation),
+
+#%%
+# Preparing data for the box plot comparing ROE and fund_return_2019 across different involvement categories
+
+# List of involvement columns
+involvement_columns = [
+    'involvement_abortive_contraceptive', 'involvement_alcohol', 'involvement_animal_testing', 
+    'involvement_controversial_weapons', 'involvement_gambling', 'involvement_gmo', 
+    'involvement_military_contracting', 'involvement_nuclear', 'involvement_palm_oil', 
+    'involvement_pesticides', 'involvement_small_arms', 'involvement_thermal_coal', 'involvement_tobacco'
+]
+
+# Check if all specified columns are present in the DataFrame
+if all(column in df.columns for column in involvement_columns + ['roe', 'fund_return_2019']):
+    # Melt the DataFrame to long format for seaborn's boxplot
+    df_melted_involvement = df[involvement_columns + ['roe', 'fund_return_2019']].melt(id_vars=['roe', 'fund_return_2019'], var_name='Involvement', value_name='Allocation')
+
+    # Create the box plot for ROE
+    plt.figure(figsize=(15, 10))
+    sns.boxplot(x='Involvement', y='roe', data=df_melted_involvement[df_melted_involvement['Allocation'] > 15])
+    plt.xticks(rotation=90)
+    plt.title('Box Plot of ROE by Involvement Category')
+    plt.show()
+
+    # Create the box plot for Fund Return 2019
+    plt.figure(figsize=(15, 10))
+    sns.boxplot(x='Involvement', y='fund_return_2019', data=df_melted_involvement[df_melted_involvement['Allocation'] > 15])
+    plt.xticks(rotation=90)
+    plt.title('Box Plot of Fund Return 2019 by Involvement Category')
+    plt.show()
+else:
+    plt.text(0.5, 0.5, 'Some specified columns are missing from the DataFrame.', 
+             horizontalalignment='center', verticalalignment='center')
+    plt.title('Data Unavailable')
+    plt.show()
+
+
+#%%
+print(df_melted_involvement.head())
+
+#%% [markdown]
+# ### Observations
+# * The involvement_abortive_contraceptive, involvement_alchol, involvement_animal_testing, miltary_contracting, tobaco are performing better in ROE.
+# * But the tobaco performance dipped in fund return 2019
+
+#%% [markdown]
+# # Question 14 
+
+#%% [markdown]
+#  How do funds with a low risk rating and high sustainability score perform in terms of 10-year trailing return?
+
+#%%
+# Analyzing the performance in terms of 10-year trailing return for funds with a low risk rating and high sustainability score
+
+# Assuming that 'low' risk rating is the minimum value in the 'risk_rating' column 
+# and 'high' sustainability score is above a certain threshold, e.g., the 75th percentile
+
+# Defining the threshold for high sustainability score
+sustainability_threshold = df['sustainability_score'].quantile(0.75)
+
+# Filtering for funds with low risk rating and high sustainability score
+low_risk_high_sustainability_funds = df[
+    (df['risk_rating'] == df['risk_rating'].min()) & 
+    (df['sustainability_score'] > sustainability_threshold)
+]
+
+# Analyzing the 10-year trailing return for these funds
+average_10_year_trailing_return = low_risk_high_sustainability_funds['fund_trailing_return_10years'].mean()
+
+average_10_year_trailing_return
+
+
+#%% [markdown]
+# ### Observations
+# 
+# The funds with a low risk rating and high sustainability score performs **badly** in terms of 10-year trailing return. The return is just around 5%. This is as expected, because lower the risk, lower the returns and higher the sustainability, lesser the returns.
+
+#%% [markdown]
+# # Question 15
+# 
+# In the context of the recent emphasis on ESG investing, how do funds with high sustainability scores compare in terms of management fees to those with low sustainability scores?
+
+#%%
+sec_nan = df['management_fees'].isna().mean() * 100
+sec_nan
+
+#%%
+df_man_fees = df.dropna(subset=['management_fees'])
+
+#%%
+# Analyzing the difference in management fees between funds with high and low sustainability scores
+# Assuming 'high' sustainability score is above the 75th percentile and 'low' is below the 25th percentile
+
+# Defining thresholds for high and low sustainability scores
+high_sustainability_threshold = df_man_fees['sustainability_score'].quantile(0.75)
+low_sustainability_threshold = df_man_fees['sustainability_score'].quantile(0.25)
+
+# Filtering for funds with high and low sustainability scores
+high_sustainability_funds = df_man_fees[df_man_fees['sustainability_score'] > high_sustainability_threshold]
+low_sustainability_funds = df_man_fees[df_man_fees['sustainability_score'] < low_sustainability_threshold]
+
+# Analyzing the average management fees for these groups
+average_fee_high_sustainability = high_sustainability_funds['management_fees'].mean()
+average_fee_low_sustainability = low_sustainability_funds['management_fees'].mean()
+
+average_fee_high_sustainability, average_fee_low_sustainability
+
+
+#%%
+from scipy.stats import ttest_ind
+
+# Performing a statistical t-test to determine if the difference in management fees is significant
+# between high sustainability and low sustainability funds
+
+# Check if both high and low sustainability groups have enough data for the test
+if len(high_sustainability_funds) > 1 and len(low_sustainability_funds) > 1:
+    # T-test
+    t_stat, p_value = ttest_ind(high_sustainability_funds['management_fees'], 
+                                low_sustainability_funds['management_fees'], 
+                                equal_var=False)  # assuming unequal variances
+else:
+    t_stat, p_value = None, None
+
+t_stat, p_value
+
+
+#%%
+high_sustainability_funds['management_fees']
+
+#%% [markdown]
+# There is a statistically significant difference in management fees between funds with high and low sustainability scores. So high sustanabilty score funds not only charge for more for management fees but also has less returns as we early.
+
+#%% [markdown]
+# # Question 16
+
+#%% [markdown]
+# What were the top-performing funds in the last quarter, and have they consistently outperformed over the last three years?
+
+#%%
+# Identifying the top-performing funds in the last quarter and analyzing their performance over the last three years
+
+# Assuming 'last quarter' refers to 'fund_return_2020_q3' and the last three years refer to 2018, 2019, and 2020
+
+# Check if the relevant columns exist
+if all(item in df.columns for item in ['fund_return_2020_q3', 'fund_return_2015','fund_return_2016','fund_return_2017','fund_return_2018', 'fund_return_2019', 'fund_return_2020_q3']):
+    # Finding the top-performing funds in the last quarter
+    top_funds_last_quarter = df.nlargest(5, 'fund_return_2020_q3')
+
+    # Checking their performance over the last three years
+    top_funds_performance = top_funds_last_quarter[['fund_name','fund_return_2015','fund_return_2016','fund_return_2017','fund_return_2018', 'fund_return_2019', 'fund_return_2020_q3']]
+
+else:
+    top_funds_performance = "Relevant columns are missing from the DataFrame."
+
+top_funds_performance
+
+
+#%%
+# Plotting the performance of the top-performing funds over the last three years
+
+plt.figure(figsize=(12, 8))
+
+# Iterating through each fund to plot its performance
+for index, row in top_funds_performance.iterrows():
+    plt.plot(['2015','2016','2017','2018', '2019', '2020 Q3'], row[['fund_return_2015','fund_return_2016','fund_return_2017','fund_return_2018', 'fund_return_2019', 'fund_return_2020_q3']], 
+             marker='o', label=row['fund_name'])
+
+plt.xlabel('Year')
+plt.ylabel('Fund Return (%)')
+plt.title('Performance of Top-Performing Funds Over the Last Three Years')
+plt.legend()
+plt.grid(True)
+plt.show()
+
+
+#%% [markdown]
+# * We can see the Baillie funds are performing well compared to others. 2018 did not not have a major impact on these funds
+# * The BNP fun had a bad performance in 2018 but returned back in 2020
+
+#%% [markdown]
+# 
