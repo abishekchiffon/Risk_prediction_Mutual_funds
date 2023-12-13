@@ -160,3 +160,13 @@ X_train, X_test, y_train, y_test = train_test_split(X_encoded, y, test_size=0.2,
 
 dtrain = xgb.DMatrix(X_train, label=y_train)
 dtest = xgb.DMatrix(X_test, label=y_test)
+
+params = {
+    'objective': 'reg:squarederror',  
+    'eval_metric': 'rmse',  
+    'max_depth': 3,
+    'learning_rate': 0.1,
+    'subsample': 0.8,
+    'colsample_bytree': 0.8,
+    'seed': 42
+}
