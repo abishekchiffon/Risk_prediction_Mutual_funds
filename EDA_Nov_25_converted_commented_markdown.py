@@ -482,3 +482,92 @@ plt.show()
 
 #%% [markdown]
 
+ # Question 7
+# Calculate the average fund return for each risk rating category during the last quarter
+
+#%%
+import pandas as pd
+
+# Assuming df is your DataFrame
+# Replace 'your_dataframe.csv' with the actual file name if you are reading from a CSV file
+# df = pd.read_csv('your_dataframe.csv')
+
+# Group by 'risk_rating' and calculate the mean of 'fund_return_2019'
+average_returns = df.groupby('risk_rating')['fund_return_2019'].mean()
+
+print(average_returns)
+
+
+#%%
+# Creating the bar graph
+plt.figure(figsize=(10, 6))
+plt.bar(average_returns.index, average_returns, color='skyblue')
+
+plt.xlabel('Risk Rating')
+plt.ylabel('Average Fund Return in 2019 (%)')
+plt.title('Average Fund Return in 2019 by Risk Rating')
+plt.xticks(list(average_returns.index))
+plt.show()
+
+#%% [markdown]
+# As we can see the funds with high risk has high returns in the year 2019
+
+#%% [markdown]
+# # Question 8
+# 
+# what are the fund percentage in each of the different credit ratings like a,aa,aaa
+
+#%%
+df.head(50).to_excel('data/first_50_rows.xlsx', index=False)
+
+#%%
+average_credit_a = df['credit_a'].mean()
+average_credit_aa = df['credit_aa'].mean()
+average_credit_aaa = df['credit_aaa'].mean()
+
+#%%
+credit_ratings = ['A', 'AA', 'AAA']
+average_percentages = [average_credit_a, average_credit_aa, average_credit_aaa]
+
+# Creating the bar graph
+plt.figure(figsize=(10, 6))
+plt.bar(credit_ratings, average_percentages, color='teal')
+
+plt.xlabel('Credit Rating')
+plt.ylabel('Average Percentage of Assets (%)')
+plt.title('Average Percentage of Fund Assets in Different Credit Ratings')
+plt.xticks(credit_ratings)
+plt.show()
+
+#%% [markdown]
+# Most of the funds are in AAA ratings. People prefer their assets to be highly rated funds.
+
+#%% [markdown]
+# # Question 10
+
+#%% [markdown]
+#  For funds with a high risk rating, what investment strategies are commonly employed?
+
+#%%
+# Filter the DataFrame for high risk rating funds
+high_risk_funds = df[df['risk_rating'] == df['risk_rating'].max()]
+
+# Extracting the investment strategies
+investment_strategies_high_risk = high_risk_funds['investment_strategy'].value_counts()
+
+pprint(investment_strategies_high_risk)
+
+#%% [markdown]
+# ### Strategies followed by the high risk rating Funds.
+# 
+# US Growth Funds Investment Objective: This strategy seeks long-term capital appreciation, primarily through investing in securities issued by US companies and, to a lesser extent, in securities from non-US companies. The criteria for considering a company to be from a particular country or region includes its principal securities trading market location, revenue sources, or country of organization.
+# 
+# European Property Funds Investment Objective: This strategy aims for long-term capital appreciation by investing in the equity securities of companies in the European real estate industry. This includes property development companies, those engaged in ownership of income-producing property, and collective investment vehicles with property exposure.
+# 
+# Investing in Asian (Excluding Japan) Equities: One strategy focuses on achieving capital appreciation by investing principally in the equity securities of companies domiciled in Asia (excluding Japan) or with significant Asian operations. This may include a mix of equities, fixed income securities, and other instruments.
+# 
+# Investing in Asian (Excluding Japanese) Equities: Another strategy involves long-term capital growth through investment in a portfolio of Asian (excluding Japanese) equities. This includes companies domiciled in, based in, or conducting a major part of their business in Asia, including both developed markets and emerging markets.
+# 
+# These investment strategies represent a focus on geographic diversification and specific industry sectors, reflecting the varied approaches taken by high risk-rated funds to achieve capital appreciation. The count next to each strategy indicates the number of funds employing that particular strategy.
+
+
