@@ -175,3 +175,9 @@ num_rounds = 100
 model = xgb.train(params, dtrain, num_rounds)
 
 y_pred = model.predict(dtest)
+
+mse = mean_squared_error(y_test, y_pred)
+r2 = r2_score(y_test, y_pred)
+
+print(f"Mean Squared Error on the test set: {mse:.2f}")
+print(f"R-squared on the test set: {r2:.2%}")
