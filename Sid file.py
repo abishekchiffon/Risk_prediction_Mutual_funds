@@ -55,3 +55,16 @@ for col in numerical_cols:
         print(f"Imputed missing values in '{col}' with {imputation_method} ({imputation_value:.3f}).")
 
 #print(df)
+
+
+print(len(df.select_dtypes(include=['object']).columns))
+print(len(df.select_dtypes(include=['float64', 'int64']).columns))
+
+
+categorical_cols = df.select_dtypes(include=['object']).columns
+
+for col in categorical_cols:
+    mode_value = df[col].mode()[0]  
+    df[col].fillna(mode_value, inplace=True)
+    
+print(df.isnull().sum().sum())
