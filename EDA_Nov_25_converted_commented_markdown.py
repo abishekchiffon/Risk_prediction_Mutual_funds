@@ -571,3 +571,81 @@ pprint(investment_strategies_high_risk)
 # These investment strategies represent a focus on geographic diversification and specific industry sectors, reflecting the varied approaches taken by high risk-rated funds to achieve capital appreciation. The count next to each strategy indicates the number of funds employing that particular strategy.
 
 
+#
+#%% [markdown]
+# # Question 11
+
+#%% [markdown]
+# Which fund category has shown the most improvement in average return over the past three years?
+
+
+#%%
+# Calculating the improvement in average return for each fund category over the past three years
+
+# Assuming the relevant columns for yearly returns are 'fund_return_2019', 'fund_return_2018', and 'fund_return_2017'
+# Checking if these columns exist in the DataFrame
+if all(item in df.columns for item in ['fund_return_2019', 'fund_return_2018', 'fund_return_2017']):
+    # Calculating average returns for each year and each category
+    avg_return_2019 = df.groupby('category')['fund_return_2019'].mean()
+    avg_return_2018 = df.groupby('category')['fund_return_2018'].mean()
+    avg_return_2017 = df.groupby('category')['fund_return_2017'].mean()
+
+    # Calculating improvement from 2017 to 2019
+    improvement = avg_return_2019 - avg_return_2017
+
+    # Identifying the category with the most improvement
+    most_improved_category = improvement.idxmax()
+    most_improvement_value = improvement.max()
+else:
+    most_improved_category = None
+    most_improvement_value = None
+
+most_improved_category, most_improvement_value
+
+
+#%% [markdown]
+# Russian Equity has shown the most improvement in average return over the past
+# three years, 39% from 2017 to 2019
+
+#%%
+# Creating box plots to compare 'fund_return_2019' across different categorical variables
+
+# Selecting a few categorical columns for the analysis
+categorical_columns = ['category', 'fund_benchmark', 'morningstar_benchmark']
+
+
+#%%
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+def plot_pretty_categorical_analysis(df, column, top_n=10):
+    """Plot aesthetically improved box plots for the top N categories in a given column."""
+    top_categories = df[column].value_counts().head(top_n).index
+    filtered_df = df[df[column].isin(top_categories)]
+    
+    plt.figure(figsize=(14, 8))
+    sns.boxplot(x=column, y='fund_return_2019', data=filtered_df, palette='viridis')
+    plt.title(f'Fund Return 2019 by {column}', fontsize=16, fontweight='bold')
+    plt.xlabel(column, fontsize=14)
+    plt.ylabel('Fund Return 2019 (%)', fontsize=14)
+    plt.xticks(rotation=90)
+    plt.grid(axis='y', linestyle='--', alpha=0.7)
+    plt.show()
+
+# List of categorical columns to plot
+categorical_columns = ['category', 'fund_benchmark', 'morningstar_benchmark']
+
+# Plotting for each categorical column with enhanced aesthetics
+for col in categorical_columns:
+    plot_pretty_categorical_analysis(df, col)
+
+
+#%% [markdown]
+# ### Analysis from category
+# 
+# * Global Large cap Growth equity performs better.
+# * GBP Moderate allocation has lowest fund return
+# * Japan large cap equity performs bad and indicates it has not returned back from the fall from late 1990s
+# 
+
+
