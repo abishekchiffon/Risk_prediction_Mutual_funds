@@ -72,3 +72,4 @@ print(df.isnull().sum().sum())
 
 
 from sklearn.feature_selection import mutual_info_regression
+target_column = 'fund_return_2019'
