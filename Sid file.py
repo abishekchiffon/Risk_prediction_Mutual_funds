@@ -1,3 +1,5 @@
+
+
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -26,8 +28,18 @@ from sklearn.model_selection import GridSearchCV
 
 
 
+#%% [markdown]
+ ## Reading data and handling missing values
+#The Python script analyzes a dataset from the "Morningstar - European Mutual Funds.csv" file, focusing on handling missing values.
+#Columns with missing values exceeding a 30% threshold are dropped, and numerical values undergo imputation using either mean or median. 
+#The decision between mean and median is contingent upon the proximity of their values; if the difference is less than 0.5, mean imputation 
+#is applied; otherwise, median imputation is utilized. Information detailing imputed numerical values is displayed. Categorical values are imputed with 
+#the mode. The script concludes by presenting summaries of the remaining categorical and numerical columns, along with the total count of remaining missing values.  
+
 
 m=pd.read_csv("D:\\Morningstar - European Mutual Funds.csv")
+
+
 
 
 threshold = 0.3  
@@ -74,6 +86,18 @@ for col in categorical_cols:
     
 print(df.isnull().sum().sum())
 
+
+
+
+
+#%% [markdown]
+## Feature selection using mutual information and pearson correlation for categorical and continuous columns respectively
+#The Python script performs feature selection based on mutual information scores for categorical features and correlation
+#  coefficients for numerical features concerning the target column 'fund_return_2019'. Categorical features with scores exceeding a 0.05 
+# threshold are selected, and their names are printed. Additionally, numerical features with absolute correlation coefficients equal to or 
+# greater than 0.1 are chosen and printed. The script ensures the target column's presence in the DataFrame to prevent errors, offering a 
+# comprehensive approach to selecting relevant features for subsequent analysis. Adjustments to the threshold values can be made according 
+# to specific analytical requirements.
 
 
 from sklearn.feature_selection import mutual_info_regression
@@ -125,6 +149,17 @@ else:
     
     
     
+
+#%% [markdown]
+
+## XGboost
+#The provided Python script focuses on building and evaluating an XGBoost regression model for predicting 'fund_return_2019' 
+# based on a selected set of features. The chosen features encompass various aspects such as asset allocation, involvement criteria, 
+# financial metrics, and historical returns. Categorical columns are one-hot encoded, and the resulting features are combined with the 
+# original numerical features. The dataset is split into training and testing sets, and an XGBoost regression model is trained on the 
+# training set. The script evaluates the model on the test set, calculating the Mean Squared Error and R-squared as performance metrics. 
+# This comprehensive approach aims to predict fund returns, leveraging a diverse set of features and advanced machine learning techniques. 
+# Adjustments to hyperparameters and feature selection can be made for further refinement based on specific objectives.
 
 
 columns_to_extract =['asset_stock', 'asset_bond', 'asset_cash', 'asset_other',
@@ -191,6 +226,20 @@ print(f"R-squared on the test set: {r2:.2%}")
 
 
 
+#%% [markdown]
+
+## Elastic net
+#The provided Python script involves building and evaluating an Elastic Net regression model for predicting 'fund_return_2019' 
+# based on a selected set of features. The chosen features encompass various aspects, including asset allocation, involvement criteria, 
+# financial metrics, and historical returns. Categorical columns are one-hot encoded using the OneHotEncoder with sparse representation, 
+# and the resulting features are combined with the original numerical features. The dataset is split into training and testing sets, and an 
+# Elastic Net regression model is trained on the training set with specified hyperparameters (alpha=1.0 and l1_ratio=0.5). The script evaluates 
+# the model on the test set, calculating the Mean Squared Error and R-squared as performance metrics. This approach utilizes regularization 
+# techniques for enhanced predictive performance and allows for flexibility in controlling model complexity. Adjustments to hyperparameters 
+# and feature selection can be made based on specific objectives.
+
+
+
 
 X = df1.drop('fund_return_2019', axis=1)
 y = df1['fund_return_2019']
@@ -225,6 +274,18 @@ print(f"R-squared on the test set: {r2:.2%}")
 
 
 
+
+#%% [markdown]
+
+## XGBoost hyper parameter tuning
+# The provided Python script involves tuning hyperparameters for an XGBoost regression model using Grid Search. The model aims to predict
+#  'fund_return_2019' based on a selected set of features, covering aspects such as asset allocation, involvement criteria, financial metrics, 
+# and historical returns. Categorical columns are one-hot encoded using the OneHotEncoder, and the resulting features are combined with 
+# the original numerical features. The dataset is split into training and testing sets. Hyperparameter tuning is performed using a grid 
+# of potential values for 'max_depth', 'learning_rate', and 'n_estimators'. The script employs 3-fold cross-validation to assess the 
+# negative mean squared error as the scoring metric. The best hyperparameters are identified, and the model is trained with these optimal 
+# settings. The script evaluates the tuned model on the test set, calculating the Mean Squared Error and R-squared as performance metrics. 
+# This approach aims to enhance the model's predictive capabilities through systematic hyperparameter optimization.
 
 
 X = df1.drop('fund_return_2019', axis=1)
@@ -280,6 +341,7 @@ print(f"R-squared on the test set: {r2:.2%}")
 
 
 
+
 models = [ 'XGB','XGB (After Tuning)', 'Elastic Net', 'RF',
           'RF(after tuning)']
 
@@ -314,3 +376,5 @@ plt.show()
 
 
 
+
+# %%
