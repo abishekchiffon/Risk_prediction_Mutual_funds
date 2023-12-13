@@ -68,3 +68,7 @@ for col in categorical_cols:
     df[col].fillna(mode_value, inplace=True)
     
 print(df.isnull().sum().sum())
+
+
+
+from sklearn.feature_selection import mutual_info_regression
